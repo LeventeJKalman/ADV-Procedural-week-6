@@ -1,56 +1,271 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct node{
-	//payload
-	int num;
+typedef struct node {
+    int data;
+    int key;
 
-	//reference to next node
-	struct node* NEXT;
-}nodeT;
+    struct node* next;
+};
 
-void main() {
-	nodeT* headerPtr = NULL;
-	int menuOpt;
-	nodeT* temp;
+struct node* head = NULL;
+struct node* current = NULL;
 
-	//display a choice menu
-	printf("Press 1 to add to the start of the list\n");
-	printf("Press 2 to add to the end of the list\n");
-	printf("Press 3 to display the list\n");
-	printf("Press -1 to Exit\n");
-	scanf("%d", &menuOpt);
+void displayList();
+void insertFirst(int key, int data);
+void insertLast(int key, int data);
+bool isEmpty();
+int length();
+struct node* find(int key);
+struct node* delete(int key);
 
-	while (menuOpt != -1)
-	{
-		if (menuOpt == 1)
-		{
-			printf("Add node at the start\n");
-			//Creating and populating the node
-			temp = (nodeT*)malloc(sizeof(nodeT*) * 1);
-			printf("Please enter the node number\n");
-			scanf("%d", &temp->num);
-			//Connecting the node to the list
-			temp->NEXT = headerPtr;
-			headerPtr = temp;
-		}
-		//adding to the end of the list
-		else if (menuOpt == 2) {
-			printf("");
-		}
-		else if (menuOpt == 3) {
-			temp = headerPtr;
-			while (temp != NULL)
-			{
-				printf("\nthe value of the node is: %d\n", temp -> num);
-				temp = temp->NEXT;
-			}
-		}
+void main(){
+    int menuOpt = 0, key, data;
+    
+    while (menuOpt != -1) {
+        printf("Press 1 to add to the start of the list\n");
+        printf("Press 2 to add to the end of the list\n");
+        printf("Press 3 to display the list\n");
+        printf("Press 4 to search the list\n");
+        printf("Press 5 to delete the list\n");
+        printf("Press 6 to display the length of the list\n");
+        printf("Press -1 to Exit\n");
+        scanf("%d", &menuOpt);
 
-		printf("\nPress 1 to add to the start of the list\n");
-		printf("Press 2 to add to the end of the list\n");
-		printf("Press 3 to display the list\n");
-		printf("Press -1 to Exit\n");
-		scanf("%d", &menuOpt);
-	}
+        if (menuOpt == 1) {
+            printf("What are the key and data values of the new node you want to add at the start of the list?\n");
+            scanf("%d %d", &key, &data);
+            insertFirst(key, data);
+            printf("New node has been added at the start!\n");
+        }
+        else if (menuOpt == 2) {
+            printf("What are the key and data values of the new node you want to add at the end of the list?\n");
+            scanf("%d %d", &key, &data);
+            insertLast(key, data);
+            printf("New node has been added at the end!\n");
+        }
+        else if (menuOpt == 3) {
+            displayList();
+        }
+        else if (menuOpt == 4) {
+            printf("What key are you looking for?\n");
+            scanf("%d", &key);
+            struct node* found = find(key);
+            if (found != NULL) {
+                printf("Node found: \n");
+                printf("(%d,%d)\n", found->key, found->data);
+            }
+            else {
+                printf("No entry with that key has been found?\n");
+            }
+        }
+        else if (menuOpt == 5) {
+            printf("What key do you want to delete?\n");
+            scanf("%d", &key);
+            struct node* deleted = delete(key);
+            if (deleted != NULL) {
+                printf("Node deleted: \n");
+                printf("(%d,%d)\n", deleted->key, deleted->data);
+            }
+            else {
+                printf("No entry with that key has been found?\n");
+            }
+        }
+        else if (menuOpt == 6) {
+            printf("The length is: %d\n", length());
+        }
+        else if(menuOpt != -1){
+            printf("Invalid response. Please enter 1, 2, 3, or -1 to exit!\n");
+        }
+        printf("\n\n");
+    }
+}
+
+//void main() {
+//    insertFirst(1, 10);
+//    insertFirst(2, 20);
+//    insertFirst(3, 30);
+//    insertFirst(4, 1);
+//    insertFirst(5, 40);
+//    insertFirst(6, 56);
+//
+//    insertLast(69, 420);
+//
+//    printf("Original List: ");
+//
+//    //print list
+//    displayList();
+//
+//    printf("\nList after deleting all items: ");
+//    displayList();
+//    insertFirst(1, 10);
+//    insertFirst(2, 20);
+//    insertFirst(3, 30);
+//    insertFirst(4, 1);
+//    insertFirst(5, 40);
+//    insertFirst(6, 56);
+//
+//    printf("\nRestored List: ");
+//    displayList();
+//    printf("\n");
+//
+//    struct node* foundLink = find(4);
+//
+//    if (foundLink != NULL) {
+//        printf("Element found: ");
+//        printf("(%d,%d) \n", foundLink->key, foundLink->data);
+//    }
+//    else {
+//        printf("Element not found.");
+//    }
+//
+//    delete(4);
+//    printf("List after deleting an item: ");
+//    displayList();
+//    printf("\n");
+//    foundLink = find(4);
+//
+//    if (foundLink != NULL) {
+//        printf("Element found: \n");
+//        printf("(%d,%d)\n", foundLink->key, foundLink->data);
+//    }
+//    else {
+//        printf("Element not found.\n");
+//    }
+//}
+
+//display the list
+void displayList() {
+    struct node* ptr = head;
+    printf("\n[ ");
+
+    //start from the beginning
+    while (ptr != NULL) {
+        printf("(%d,%d) ", ptr->key, ptr->data);
+        ptr = ptr->next;
+    }
+
+    printf(" ]\n");
+}
+
+//insert link at the first location
+void insertFirst(int key, int data) {
+    //create a link
+    struct node* link = (struct node*)malloc(sizeof(struct node));
+
+    link->key = key;
+    link->data = data;
+
+    //point it to old first node
+    link->next = head;
+
+    //point first to new first node
+    head = link;
+}
+
+//insert at the end
+void insertLast(int key, int data){
+    struct node* current = head;
+
+    //set current as last node in the list
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    //create a node
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
+
+    //apply variables
+    newNode->key = key;
+    newNode->data = data;
+    newNode->next = NULL;
+
+    //add as next to the current
+    current->next = newNode;
+}
+
+//is list empty
+bool isEmpty() {
+    return head == NULL;
+}
+
+int length() {
+    int length = 0;
+    struct node* current;
+
+    for (current = head; current != NULL; current = current->next) {
+        length++;
+    }
+
+    return length;
+}
+
+//find a link with given key
+struct node* find(int key) {
+
+    //start from the first link
+    struct node* current = head;
+
+    //if list is empty
+    if (head == NULL) {
+        return NULL;
+    }
+
+    //navigate through list
+    while (current->key != key) {
+
+        //if it is last node
+        if (current->next == NULL) {
+            return NULL;
+        }
+        else {
+            //go to next link
+            current = current->next;
+        }
+    }
+
+    //if data found, return the current Link
+    return current;
+}
+
+//delete a link with given key
+struct node* delete(int key) {
+
+    //start from the first link
+    struct node* current = head;
+    struct node* previous = NULL;
+
+    //if list is empty
+    if (head == NULL) {
+        return NULL;
+    }
+
+    //navigate through list
+    while (current->key != key) {
+
+        //if it is last node
+        if (current->next == NULL) {
+            return NULL;
+        }
+        else {
+            //store reference to current link
+            previous = current;
+            //move to next link
+            current = current->next;
+        }
+    }
+
+    //found a match, update the link
+    if (current == head) {
+        //change first to point to next link
+        head = head->next;
+    }
+    else {
+        //bypass the current link
+        previous->next = current->next;
+    }
+
+    return current;
 }
