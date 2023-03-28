@@ -83,59 +83,6 @@ void main(){
     }
 }
 
-//void main() {
-//    insertFirst(1, 10);
-//    insertFirst(2, 20);
-//    insertFirst(3, 30);
-//    insertFirst(4, 1);
-//    insertFirst(5, 40);
-//    insertFirst(6, 56);
-//
-//    insertLast(69, 420);
-//
-//    printf("Original List: ");
-//
-//    //print list
-//    displayList();
-//
-//    printf("\nList after deleting all items: ");
-//    displayList();
-//    insertFirst(1, 10);
-//    insertFirst(2, 20);
-//    insertFirst(3, 30);
-//    insertFirst(4, 1);
-//    insertFirst(5, 40);
-//    insertFirst(6, 56);
-//
-//    printf("\nRestored List: ");
-//    displayList();
-//    printf("\n");
-//
-//    struct node* foundLink = find(4);
-//
-//    if (foundLink != NULL) {
-//        printf("Element found: ");
-//        printf("(%d,%d) \n", foundLink->key, foundLink->data);
-//    }
-//    else {
-//        printf("Element not found.");
-//    }
-//
-//    delete(4);
-//    printf("List after deleting an item: ");
-//    displayList();
-//    printf("\n");
-//    foundLink = find(4);
-//
-//    if (foundLink != NULL) {
-//        printf("Element found: \n");
-//        printf("(%d,%d)\n", foundLink->key, foundLink->data);
-//    }
-//    else {
-//        printf("Element not found.\n");
-//    }
-//}
-
 //display the list
 void displayList() {
     struct node* ptr = head;
