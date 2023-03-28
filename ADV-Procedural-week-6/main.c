@@ -35,14 +35,18 @@ void main(){
         scanf("%d", &menuOpt);
 
         if (menuOpt == 1) {
-            printf("What are the key and data values of the new node you want to add at the start of the list?\n");
-            scanf("%d %d", &key, &data);
+            printf("\nWhat is the key value that you want to add at the start of the list?\n");
+            scanf("%d", &key);
+            printf("What is the data value that you want to add at the start of the list?\n");
+            scanf("%d", &data);
             insertFirst(key, data);
             printf("New node has been added at the start!\n");
         }
         else if (menuOpt == 2) {
-            printf("What are the key and data values of the new node you want to add at the end of the list?\n");
-            scanf("%d %d", &key, &data);
+            printf("\nWhat is the key value that you want to add at the end of the list?\n");
+            scanf("%d", &key);
+            printf("What is the data value that you want to add at the end of the list?\n");
+            scanf("%d", &data);
             insertLast(key, data);
             printf("New node has been added at the end!\n");
         }
